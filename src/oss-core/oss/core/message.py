@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from uuid import UUID, uuid4
 from dataclasses import dataclass
@@ -47,7 +48,7 @@ class BrokerMessage:
         self.broker_connection.channel.basic_publish(
             exchange=self.exchange,
             routing_key=self.routing_key,
-            body=b"Hello world",
+            body=json.dumps(self.body),
         )
 
     def send_rpc(self, callback_function) -> None:
