@@ -1,7 +1,11 @@
+from __future__ import annotations
 import json
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import uuid4
 from dataclasses import dataclass
+from pydantic import BaseModel, Field, UUID4
+from typing import Union
+from venv import logger
 
 import pika
 from pika.exchange_type import ExchangeType
@@ -28,16 +32,28 @@ class BrokerConnection:
         self.channel.exchange_declare(exchange=name, exchange_type=exchange_type.value)
 
 
-@dataclass
-class BrokerMessage:
-    broker_connection: BrokerConnection
-    exchange: str
-    routing_key: str
-    producer: UUID
+class BrokerMessage(BaseModel):
+    model_config = {
+        "extra": "ignore",  # Prevent unwanted extra fields from being added to this class
+    }
+    producer: UUID4 = Field(
+        examples=["00000000-0000-0000-0000-000000000000"],
+        description="The unique identifier of the producer of this broker message.",
+    )
+    identifier: UUID4 = Field(
+        examples=["00000000-0000-0000-0000-000000000000"],
+        description="The unique identifier of this broker message.",
+        default=uuid4(),
+    )
     body: dict
-    identifier: UUID = uuid4()  # Auto generated on initialization
 
-    def send(self) -> None:
+    def send(
+        self,
+        broker_connection: BrokerConnection,
+        exchange: str,
+        routing_key: str,
+        broker_message: Union[BrokerMessage, str],
+    ) -> None:
         """
         Sends the message to the topic on the message broker.
         Args:
@@ -45,13 +61,23 @@ class BrokerMessage:
         Returns:
             None
         """
-        self.broker_connection.channel.basic_publish(
-            exchange=self.exchange,
-            routing_key=self.routing_key,
-            body=json.dumps(self.body),
-        )
 
-    def send_rpc(self, callback_function) -> None:
+        serialized_message: str = ""
+        if isinstance(broker_message, BrokerMessage):
+            # Needs to be serialized to a json string
+            serialized_message = broker_message.to_json()
+        elif isinstance(broker_message, str):
+            # It is already serialized
+            serialized_message = broker_message
+        else:
+            message_type = type(broker_message)
+            logger.error(f"Invalid broker_message type: {message_type}")
+
+        # The serialized message needs to be encoded to bytes
+        encoded_message = serialized_message.encode()
+        broker_connection.channel.basic_publish(exchange=exchange, routing_key=routing_key, body=encoded_message)
+
+    def send_rpc(self, callback_function) -> BrokerMessage:
         """
         Sends a rpc request to on the message broker
 
@@ -63,3 +89,16 @@ class BrokerMessage:
             None
         """
         raise NotImplementedError
+
+    def to_json(self) -> str:
+        serialized_message: str = self.model_dump_json()
+
+        return serialized_message
+
+    @staticmethod
+    def from_json(serialized_message: str) -> BrokerMessage:
+        broker_message: dict = json.loads(serialized_message)
+
+        deserialized_message: BrokerMessage = BrokerMessage(**broker_message)
+
+        return deserialized_message
