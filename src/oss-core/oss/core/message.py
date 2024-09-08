@@ -70,8 +70,7 @@ class BrokerMessage(BaseModel):
             # It is already serialized
             serialized_message = broker_message
         else:
-            message_type = type(broker_message)
-            logger.error(f"Invalid broker_message type: {message_type}")
+            logger.error(f"Invalid broker_message type: {type(broker_message)}")
 
         # The serialized message needs to be encoded to bytes
         encoded_message = serialized_message.encode()
