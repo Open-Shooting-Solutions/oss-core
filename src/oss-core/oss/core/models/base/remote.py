@@ -42,8 +42,6 @@ class BaseRemote(ABC):
     # Each type of remote needs a different hook type
     _hook_type: type[BaseHook]
 
-    _action_schema: Iterable
-
     def __init__(self) -> None:
         self._broker_connection = BrokerConnection(host="localhost", port=5672)
         self._broker_connection.setup_channel(name="remote", exchange_type=BrokerExchangeType.TOPIC)
