@@ -2,7 +2,9 @@
   "name": "Servicepistool",
   "name_abbreviation": "SP",
   "identifier": "9eb6ac9a-2c49-4926-976b-c66b3de4f819",
+  "timer_type": "multi_stage",
   "description": "Service Pistool met de standaard regels van de KNSA",
+  "managing_organization": "KNSA",
   "stages": [
     {
       "name": "Stage 1 - 25m",
@@ -32,7 +34,7 @@
                   "name": "Wait 15 seconds",
                   "action": "wait",
                   "arguments": [
-                    0.5
+                    15.0
                   ]
                 }
               ]
@@ -44,7 +46,7 @@
                   "name": "Signal 0.5 seconds",
                   "action": "signal",
                   "arguments": [
-                    0.5
+                    15.0
                   ]
                 }
               ]

@@ -1,11 +1,39 @@
-from abc import ABC, abstractmethod
+from __future__ import annotations
 from dataclasses import dataclass
-from uuid import UUID, uuid4
-from oss.core.message import BrokerConnection
+from uuid import UUID
 
 
 @dataclass
-class BaseDiscipline(ABC):
-    # Each buzzer needs an uuid so we can keep track of the discipline in logging.
+class BaseAction:
+    action: str
+    description: str
+    arguments: list
+
+
+@dataclass
+class BaseStep:
+    name: str
+
+
+@dataclass
+class BasePhase:
+    name: str
+    name_abbreviation: str
+    description: str
+
+
+@dataclass
+class BaseStage:
+    name: str
+    name_abbreviation: str
+    description: str
+
+
+@dataclass
+class BaseDiscipline:
+    # Each discipline needs an uuid so we can keep track of the discipline in logging.
     # This is mostly for debugging.
-    _identifier: UUID
+    identifier: UUID
+    name: str
+    name_abbreviation: str
+    description: str

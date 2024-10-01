@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from uuid import UUID, uuid4
-from typing import Optional, Callable, Iterable
+from typing import Optional, Callable
 
 from oss.core.models.base.timer import TimerControl
 from oss.core.message import BrokerMessage, BrokerConnection, BrokerExchangeType
