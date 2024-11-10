@@ -1,7 +1,31 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum
 from uuid import UUID, uuid4
 from oss.core.message import BrokerConnection
+
+
+@dataclass
+class SchedulerAction:
+    stage_number: int
+    stage_name: str
+    phase_number: int
+    phase_name: str
+    step_number: int
+    step_name: str
+    action_number: int
+    action: str
+    action_worker: str
+    action_arguments: list
+    start_offset: float
+
+
+class SchedulerState(Enum):
+    STOPPED: str = "STOPPED"
+    PAUSED: str = "PAUSED"
+    WAITING: str = "WAITING"
+    RUNNING: str = "RUNNING"
+    INVALID: str = "INVALID"
 
 
 class TimerControl(Enum):
@@ -12,7 +36,7 @@ class TimerControl(Enum):
     RESET_STAGE: str = "RESET_STAGE"
     NEXT_STAGE: str = "NEXT_STAGE"
     PREVIOUS_STAGE: str = "PREVIOUS_STAGE"
-    SET_DELAY: str = "SET_DELAY"
+    SET_TOGGLE_DELAY: str = "SET_TOGGLE_DELAY"
 
 
 class BaseTimer(ABC):
@@ -22,6 +46,8 @@ class BaseTimer(ABC):
 
     # Each remote needs an connection to the message broker to send commands
     _broker_connection: BrokerConnection
+
+    state: SchedulerState
 
     @abstractmethod
     def __init__(self) -> None:

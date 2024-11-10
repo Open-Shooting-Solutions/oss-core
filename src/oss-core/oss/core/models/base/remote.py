@@ -59,7 +59,6 @@ class BaseRemote(ABC):
             broker_connection=self._broker_connection,
             exchange="remote",
             routing_key="remote.keypad.action",
-            broker_message=broker_message,
         )
 
     def _register_hooks(self) -> None:

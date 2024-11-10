@@ -5,8 +5,11 @@ from uuid import UUID
 
 @dataclass
 class BaseAction:
-    action: str
+    name: str
+    start_offset: float
     description: str
+    worker: str
+    action: str
     arguments: list
 
 
@@ -36,4 +39,6 @@ class BaseDiscipline:
     identifier: UUID
     name: str
     name_abbreviation: str
+    managing_organization: str
+    timer_type: str
     description: str

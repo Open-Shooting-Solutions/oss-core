@@ -2,10 +2,8 @@ from __future__ import annotations
 import json
 from enum import Enum
 from uuid import uuid4
-from dataclasses import dataclass
 from pydantic import BaseModel, Field, UUID4
-from typing import Union
-from venv import logger
+
 
 import pika
 from pika.exchange_type import ExchangeType
@@ -52,7 +50,6 @@ class BrokerMessage(BaseModel):
         broker_connection: BrokerConnection,
         exchange: str,
         routing_key: str,
-        broker_message: Union[BrokerMessage, str],
     ) -> None:
         """
         Sends the message to the topic on the message broker.
@@ -62,15 +59,8 @@ class BrokerMessage(BaseModel):
             None
         """
 
-        serialized_message: str = ""
-        if isinstance(broker_message, BrokerMessage):
-            # Needs to be serialized to a json string
-            serialized_message = broker_message.to_json()
-        elif isinstance(broker_message, str):
-            # It is already serialized
-            serialized_message = broker_message
-        else:
-            logger.error(f"Invalid broker_message type: {type(broker_message)}")
+        # Needs to be serialized to a json string
+        serialized_message = self.to_json()
 
         # The serialized message needs to be encoded to bytes
         encoded_message = serialized_message.encode()
