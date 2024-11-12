@@ -2,7 +2,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
-from typing import Any
+from typing import Any, Optional
 
 
 class ArgumentParser:
@@ -17,9 +17,16 @@ class ArgumentParser:
         environment_variables: dict = {}
         for field_name, field_metadata in launch_argument_model.model_fields.items():
             environment_variable_name = field_name.upper()
-            field_type = [
-                variable_type for variable_type in field_metadata.annotation.__args__ if variable_type is not type(None)
-            ][0]
+
+            # If it is an Optional type then extract the inner (real) type
+            if hasattr(field_metadata.annotation, "__args__"):
+                field_type = [
+                    variable_type
+                    for variable_type in field_metadata.annotation.__args__
+                    if variable_type is not type(None)
+                ][0]
+            else:  # This is already a real type
+                field_type = field_metadata.annotation
 
             # Retrieve the environment variable and cast it into the required type
             environment_variable_value = os.getenv(environment_variable_name)
@@ -36,9 +43,18 @@ class ArgumentParser:
         for field_name, field_metadata in launch_argument_model.model_fields.items():
             argument_name = f"--{field_name}"  # Use --field_name format
             default = field_metadata.default if field_metadata.default is not None else argparse.SUPPRESS
-            field_type = [
-                variable_type for variable_type in field_metadata.annotation.__args__ if variable_type is not type(None)
-            ][0]
+
+            # If it is an Optional type then extract the inner (real) type
+            if hasattr(field_metadata.annotation, "__args__"):
+                field_type = [
+                    variable_type
+                    for variable_type in field_metadata.annotation.__args__
+                    if variable_type is not type(None)
+                ][0]
+            else:  # This is already a real type
+                field_type = field_metadata.annotation
+
+            field_metadata.annotation
 
             help_text = field_metadata.description or ""
 
