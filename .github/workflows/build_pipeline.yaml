@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/project_init
+      - feature/package_init
   workflow_dispatch:
 jobs:
   lint_python_code:
