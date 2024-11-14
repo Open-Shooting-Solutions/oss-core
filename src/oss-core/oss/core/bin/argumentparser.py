@@ -9,7 +9,7 @@ class ArgumentParser:
     def load_dotenv_file(filepath: str) -> None:
         # First load the supplied .env file. This way any "default" or packaged env variables can being overwritten.
         # every argument can be loaded via the environment variables
-        load_dotenv()
+        load_dotenv(dotenv_path=filepath)
 
     @staticmethod
     def parse_environment_variables(launch_argument_model: Any) -> dict:
@@ -72,7 +72,7 @@ class ArgumentParser:
         # If the commandline arguments specify a worker_config .env file load it.
         if commandline_arguments.get("worker_config"):
             # Load the dotenv files to overwrite default environment variables
-            ArgumentParser.load_dotenv_file(filepath=commandline_arguments.get("worker_config"))
+            ArgumentParser.load_dotenv_file(filepath=commandline_arguments["worker_config"])
 
         # Parse the environment variables
         environment_variables: dict = ArgumentParser.parse_environment_variables(
