@@ -70,7 +70,7 @@ jobs:
           poetry install
       - name: publish_package
         env:
-          PYPI_URL: ${{vars.PYPI_TEST_URL}} #This is a GitHub variable
+          PYPI_URL: ${{vars.PYPI_PROD_URL}} #This is a GitHub variable
           PYPI_TOKEN: ${{secrets.PYPI_TOKEN}} #This is a GitHub secret
         run: | # Build and publish the package with all the namespace packages
           export POETRY_APP_VERSION=$(poetry version --short)
