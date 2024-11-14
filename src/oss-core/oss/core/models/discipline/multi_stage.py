@@ -48,5 +48,7 @@ class Discipline:
 
         timer_type = discipline_configuration.get("timer_type")
 
+        print(timer_type)
+
         # Pointer to single or multi-stage
         return MultiStageDiscipline(**discipline_configuration)

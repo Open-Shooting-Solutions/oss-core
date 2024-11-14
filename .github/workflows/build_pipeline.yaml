@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
       - name: install_poetry
         run: | # Install poetry and check it works
-          pip install poetry
+          pip install poetry --disable-pip-version-check
           poetry --version
       - name: install_python_dependencies
         run: | # Install the dependencies but update the dev dependencies because they are linters.

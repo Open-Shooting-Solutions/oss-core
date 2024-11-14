@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from oss.core.models.base.discipline import BaseDiscipline, BaseStage, BasePhase, BaseStep, BaseAction
+from oss.core.models.base.discipline import BaseDiscipline, BasePhase, BaseStep, BaseAction
 
 
 @dataclass

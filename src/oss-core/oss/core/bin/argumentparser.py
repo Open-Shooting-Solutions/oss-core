@@ -1,8 +1,7 @@
 import argparse
 import os
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
-from typing import Any, Optional
+from typing import Any
 
 
 class ArgumentParser:
