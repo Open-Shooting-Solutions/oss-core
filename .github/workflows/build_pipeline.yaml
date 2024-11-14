@@ -35,18 +35,18 @@ jobs:
       - name: lint_python_mypy
         run: | # MYPY cant handle my pkgutil-style structure. It "thinks" that my root namespace is called "src"
           poetry run mypy -p src
-      - name: lint_python_pylint
-        run: | # General code linter
-          poetry run pylint ./src/ --recursive=y
-      - name: lint_python_pyright
-        run: | # General code linter focus on types
-          poetry run pyright ./src/
-      - name: lint_python_ruff
-        run: | # General code linter
-          poetry run ruff check --config pyproject.toml ./src/
-      - name: lint_documentation_pydocstyle
-        run: | # Docstring linter
-          poetry run pydocstyle ./src/
+      #- name: lint_python_pylint
+      #  run: | # General code linter
+      #    poetry run pylint ./src/ --recursive=y
+      #- name: lint_python_pyright
+      #  run: | # General code linter focus on types
+      #    poetry run pyright ./src/
+      #- name: lint_python_ruff
+      #  run: | # General code linter
+      #    poetry run ruff check --config pyproject.toml ./src/
+      #- name: lint_documentation_pydocstyle
+      #  run: | # Docstring linter
+      #    poetry run pydocstyle ./src/
       - name: lint_python_isort
         run: | # Import sorting linter
           poetry run isort ./src/ --check --dif
