@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Callable, Optional
 from uuid import UUID, uuid4
-from typing import Optional, Callable
 
+from oss.core.message import BrokerConnection, BrokerExchangeType, BrokerMessage
 from oss.core.models.base.timer import TimerControl
-from oss.core.message import BrokerMessage, BrokerConnection, BrokerExchangeType
 
 
 class BaseHook(ABC):

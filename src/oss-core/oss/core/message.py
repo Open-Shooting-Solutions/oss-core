@@ -1,12 +1,12 @@
 from __future__ import annotations
+
 import json
 from enum import Enum
 from uuid import uuid4
-from pydantic import BaseModel, Field, UUID4
-
 
 import pika
 from pika.exchange_type import ExchangeType
+from pydantic import UUID4, BaseModel, Field
 
 
 class BrokerExchangeType(Enum):

@@ -1,6 +1,6 @@
-from uuid import UUID, uuid4
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from uuid import UUID, uuid4
 
 
 @dataclass

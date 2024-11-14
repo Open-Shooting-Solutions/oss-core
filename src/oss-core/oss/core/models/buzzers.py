@@ -1,4 +1,5 @@
 from enum import Enum
+
 from oss.buzzer.buzzers.virtual import VirtualBuzzer
 
 

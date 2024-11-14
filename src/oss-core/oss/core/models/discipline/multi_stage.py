@@ -1,8 +1,14 @@
-import pkgutil
 import json
+import pkgutil
 from dataclasses import dataclass
 
-from oss.core.models.base.discipline import BaseDiscipline, BaseStage, BasePhase, BaseStep, BaseAction
+from oss.core.models.base.discipline import (
+    BaseAction,
+    BaseDiscipline,
+    BasePhase,
+    BaseStage,
+    BaseStep,
+)
 from oss.core.models.discipline.single_stage import SingleStageDiscipline
 
 
