@@ -1,7 +1,7 @@
 import argparse
 import os
-from dotenv import load_dotenv
 from typing import Any
+from dotenv import load_dotenv
 
 
 class ArgumentParser:
@@ -37,7 +37,6 @@ class ArgumentParser:
     def parse_commandline_arguments(launch_argument_model: Any) -> dict:
         argument_parser: argparse.ArgumentParser = argparse.ArgumentParser()
         argument_parser.prog = "oss_worker"
-        argument_parser.version = "v1.0"
 
         for field_name, field_metadata in launch_argument_model.model_fields.items():
             argument_name = f"--{field_name}"  # Use --field_name format
@@ -52,8 +51,6 @@ class ArgumentParser:
                 ][0]
             else:  # This is already a real type
                 field_type = field_metadata.annotation
-
-            field_metadata.annotation
 
             help_text = field_metadata.description or ""
 

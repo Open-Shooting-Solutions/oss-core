@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 from uuid import UUID, uuid4
 from typing import Optional, Callable
 
@@ -41,6 +42,7 @@ class BaseRemote(ABC):
 
     # Each type of remote needs a different hook type
     _hook_type: type[BaseHook]
+    _action_schema: type[Enum]
 
     def __init__(self) -> None:
         self._broker_connection = BrokerConnection(host="localhost", port=5672)
