@@ -1,0 +1,80 @@
+name: "Package oss-core"
+on:
+  push:
+    branches:
+      - main
+      - feature/project_init
+  workflow_dispatch:
+jobs:
+  lint_python_code:
+    name: lint_python_code
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.12-slim-bookworm
+    steps:
+      - name: checkout_repo
+        uses: actions/checkout@v4
+      - name: install_poetry
+        run: | # Install poetry and check it works
+          pip install poetry
+          poetry --version
+      - name: install_python_dependencies
+        run: | # Install the dependencies but update the dev dependencies because they are linters.
+          poetry config virtualenvs.in-project true
+          poetry update --only=dev
+          poetry install --without localdev
+      - name: lint_python_bandit
+        run: | # Linter for security issues like secrets and pseudo random numbers in the code.
+          poetry run bandit -c pyproject.toml -r .
+      - name: lint_python_black
+        run: | # General code linter
+          poetry run black ./src/ --check --diff
+      - name: lint_python_flake
+        run: | # General code linter
+          poetry run flake8 ./src/
+      - name: lint_python_mypy
+        run: | # MYPY cant handle my pkgutil-style structure. It "thinks" that my root namespace is called "src"
+          poetry run mypy -p src
+      - name: lint_python_pylint
+        run: | # General code linter
+          poetry run pylint ./src/ --recursive=y
+      - name: lint_python_pyright
+        run: | # General code linter focus on types
+          poetry run pyright ./src/
+      - name: lint_python_ruff
+        run: | # General code linter
+          poetry run ruff check --config pyproject.toml ./src/
+      - name: lint_documentation_pydocstyle
+        run: | # Docstring linter
+          poetry run pydocstyle ./src/
+      - name: lint_python_isort
+        run: | # Import sorting linter
+          poetry run isort ./src/ --check --dif
+
+  build_python_package:
+    name: build_python_package
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.12-slim-bookworm
+    needs: [lint_python_code]
+    steps:
+      - name: checkout_repo
+        uses: actions/checkout@v4
+      - name: install_and_configure_poetry
+        run: | # Install poetry and check it works
+          pip install poetry
+          poetry --version
+      - name: install_and_configure_poetry
+        run: | # Configure Poetry and install the package dependencies
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: publish_package
+        env:
+          PYPI_URL: ${{vars.PYPI_TEST_URL}} #This is a GitHub variable
+          PYPI_TOKEN: ${{secrets.PYPI_TOKEN}} #This is a GitHub secret
+        run: | # Build and publish the package with all the namespace packages
+          export POETRY_APP_VERSION=$(poetry version --short)
+          poetry version $POETRY_APP_VERSION
+          poetry config repositories.pypi $PYPI_URL
+          poetry config pypi-token.pypi $PYPI_TOKEN
+          poetry publish --build
